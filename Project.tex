@@ -225,6 +225,7 @@ To analyze the runtime of this algorithm, we will need analyze the runtime of OP
 
 Now, if we look at the main algorithm, we make a single call to OPT, with an input of $(n,w)$.  The only other thing that may contribute to the runtime of the algorithm, is the for loop that will run linearly in $n$.  Therefore, the call to OPT is the only major contributor to the runtime of solve.  Thus, solve is $O(nw)$.  Notice that this seems polynomial in the input, as the input is an array of size $n$ that sums to $2w$, but we want the algorithm to be polynomial in the size of the input.  Notice that $w$ is bounded by $2^s$, where $s$ is the size of the data type used to store the values.  Thus, as $w$ is not polynomial in the size of the input, neither is $O(nw)$.  So, solve is not a polynomial time algorithm.
 
+
 \section{Complexity Analysis}
 
 Originally, we considered a greedy strategy when approaching the proposed problem. Unfortunately, none of the obvious greedy strategies were capable of producing a correct solution to the problem in all cases. We continued by modifying the given problem slightly, before finding a polynomial time greedy solution to this new problem. This modification allows us to correct the ``mistakes'' that our algorithm made when choosing the items that would be given to each robber. However, the strategy that we used to solve the modified version of the \textsc{Loot Division} problem does not work for the problem as it is originally stated. The greedy strategy simply cannot consider enough information about the input at one time --- there are no obvious ways to divide the original problem into the much simpler subproblems that are characteristic of greedy problems. \\ \\
@@ -248,7 +249,50 @@ It should be reasonably clear that the above algorithm runs in linear time (disr
 
 The \textsc{Loot Division} problem seems to be a numerical problem. We make this conclusion based on its similarity to the \textsc{Subset Sum} problem. In fact, the aforementioned decision procedure is exactly the same as the statement of the \textsc{Subset Sum} problem. Since the \textsc{Subset Sum} problem is classified as a numerical problem, the \textsc{Loot Division} problem must be a numerical problem as well. \\ \\
 
-Consider the \textsc{Subset Sum} Problem.  This problem is defined as follows:
+We want to show that \textsc{Loot Division} is an NP-complete problem, thus we will first show that it is NP, and then give a reduction from the \textsc{Subset Sum} to \textsc{Loot Division}.  Since \textsc{Subset Sum} is a well known NP-complete problem.  This will prove that \textsc{Loot Divison} is also an NP-complete problem.
+
+\begin{lemma}
+\textsc{Loot Divison} is NP
+\end{lemma}
+
+\textit{Proof:} To show that a problem is NP, we must find a certification algorithm, such that a certificate exists for every yes-instance of the problem.  In this case, we will use the subset of items that are to be given to one of the robbers as the certificate.  We now have the following certification algorithm:
+
+\begin{verbatim}
+
+def certify(int[] S, int[]S1):
+     int sum;
+     int total = sumValues(S);
+     for (item,value) in S1:
+           sum += value
+           if item not in S:
+                  return false;
+           S.remove(item)
+      end for
+      if 2*value = total:
+              return true;
+     else:
+             return false;
+
+\end{verbatim}
+
+Notice that all of these operations can be performed in at most linear time, and the only loop traverses the elements of S1 exactly once.  Thus the runtime of this algorithm is $O(n^2)$, assuming that $S.remove(item)$ is a linear time algorithm.
+
+Now, we must show that there exists a certificate for every yes-instance, but not for any no-instance.  Suppose that it is possible to divide the loot evenly.  Then, we can find a subset of $S$ such that the sum of the values of the items in it are exactly half of the sum of the Values of the original set.  In this case, we can pass in this subset.  Since it is a subset of $S$, we will never enter the \texttt{if item not in S} branch, and the final value will be exactly half of the total value.  Thus the certifier will return True.
+
+Now, suppose that there is no such subset.  Then, for the algorithm to return True, we must give is a set of items, all of which are in $S$, without repeats.  (thus it is a subset), and with a total value of exactly half the initial value.  However, by assumption, no such subset exists.  Therefore, the certifier will return False.
+
+Thus, since a certifier for \textsc{Loot Division} exists, we see that \textsc{Loot Division} is NP
+
+\begin{flushright}
+$\square$
+\end{flushright} 
+
+
+\begin{lemma}
+\textsc{Subset Sum} $\leq_p$ \textsc{Loot Division}
+\end{lemma}
+
+\textit{Proof:} Consider the \textsc{Subset Sum} Problem.  This problem is defined as follows:
 
 Let $S$ be a set of positive integers.  Is there a subset of $S$ such that it adds up to some value $k$?
 
@@ -283,6 +327,24 @@ Case 3: $n > 2k$.  In this case, we are looking for a subset of $S$ worth less t
 Therefore, this algorithm correctly solves the \textsc{Subset Sum} problem in polynomial time, given a polynomial algorithm for LootDiv.  
 
 Therefore, \textsc{Subset Sum} $\leq_p$  \textsc{LootDiv} 
+
+\begin{flushright}
+$\square$
+\end{flushright}
+
+\begin{theorem}
+\textsc{Loot Division} is NP-complete
+\end{theorem}
+
+\textit{Proof:}  From the previous two lemmas, we see that \textsc{Loot Division} is NP, and that some NP-complete problem reduced to it.  Therefore, \textsc{Loot Division} is NP-complete.
+
+\begin{flushright}
+$\square$
+\end{flushright}
+
+\section{Conclusion}
+
+This part has yet to be written
 
 
 
