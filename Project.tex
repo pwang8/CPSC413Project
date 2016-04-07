@@ -165,7 +165,8 @@ If we were to naively implement this without memoization, we would have an expon
 
 \[T(n) = 2T(n-1) + c_1 ~~~ T(0) = c_2 \]
 
-We see that in this case $T(n) \geq 2^{n}$, since $T(0) = c_2 \geq 2^0$, and $T(n) \geq 2T(n-1) = 2(2^{n-1}) = 2^n $.  Thus $T(n) \in \Omega(2^n)$.  Also, $T(n) \leq\max(c_1,c_2)3^{n}$, since $T(0) = c_2 \leq \max(c_1,c_2)3^0$, and $T(n) \leq 2T(n-1) \leq 2c_13^{n-1} + c_1 \leq c_13^n$.  Therefore $T(n) \in O(3^n)$.  Therefore, without memoization, this algorithm runs in exponential time.
+
+We claim that $T(n) \geq 2^{n}$. Since $T(0) = c_2 \geq 2^0$ applies for $n=0$ this is our base case.  Now suppose that $T(k) \geq 2^k$ for some $k \geq 0$.  We can see that  $T(k+1) \geq 2T(k) \geq 2(2^{k}) = 2^{k+1} $. Thus $T(k+1) \geq 2^{k+1}$ so $T(n) \geq 2^n$ for all $n > 0$. Hence $T(n) \in \Omega(2^n)$. Therefore, without memoization, this algorithm runs no better than exponential time.
 
 Now, suppose that we use memoization.  Then, we have a maximum of $n\frac{w}{2}$ calls, where $n$ is the number of items, and $w$ is the toal value of the items, as every call is of the form $OPT(i,v)$, where $0 \leq i \leq n$, and $0 \leq v \leq \frac{w}{2}$.  Thus, if we use memoization, our worst case scenario is that the whole memoization table must be filled.  This gives us a runtime of $O(nw)$, since each entry in the table can be computed in constant time, provided the previous columns have been filled.  Thus, dynamic programming would allow us to reduce the time of this algorithm from exponential in $n$ to polynomial in $n$ and $w$.
 
